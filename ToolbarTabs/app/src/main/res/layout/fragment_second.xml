@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/FragmentDos"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragments.SecondFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <EditText
+        android:id="@+id/IdBufferIn"
+        android:layout_width="286dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/IdLabelMonitor"
+        android:textAlignment="viewStart"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/IdBtnEnviar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/IdBufferIn"
+        android:layout_alignParentEnd="true"
+        android:text="Enviar" />
+
+    <Button
+        android:id="@+id/IdBtnBorrar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:text="Borrar" />
+
+    <TextView
+        android:id="@+id/IdTxtMonitor"
+        android:layout_width="379dp"
+        android:layout_height="10dp"
+        android:layout_above="@+id/IdBtnBorrar"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/IdBtnEnviar"
+        android:layout_marginBottom="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:background="@color/Negro"
+        android:editable="true"
+        android:scrollbarAlwaysDrawVerticalTrack="false"
+        android:scrollbars="vertical"
+        android:textAlignment="viewStart"
+        android:textColor="@color/MonitorColor"
+        android:textStyle="bold"
+        android:verticalScrollbarPosition="right"
+        tools:editable="true"
+        tools:text="Monitor" />
+
+    <Button
+        android:id="@+id/IdTemp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/IdTxtMonitor"
+        android:text="Button" />
+
+</RelativeLayout>

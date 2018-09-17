@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--<resources>-->
+    <!--<color name="colorPrimary">#3F51B5</color>-->
+    <!--<color name="colorPrimaryDark">#303F9F</color>-->
+    <!--<color name="colorAccent">#FF4081</color>-->
+    <!--<color name="Negro">#000000</color>-->
+    <!--<color name="MonitorColor">#3be602</color>-->
+    <!--<color name="On">#8142ff03</color>-->
+    <!--<color name="Off">#9aff0004</color>-->
+<!--</resources>-->
+
+<resources>
+
+<color name="colorPrimary">#00796b</color>
+<color name="colorprimaryLight">#48a999</color>
+<color name="colorPrimaryDark">#004c40</color>
+<color name="colorsecondary">#81d4fa</color>
+<color name="colorsecondaryLight">#b6ffff</color>
+<color name="colorsecondaryDark">#4ba3c7</color>
+<color name="colorprimaryText">#ffffff</color>
+<color name="colorsecondaryText">#000000</color>
+<color name="MonitorColor">#3be602</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="On">#8142ff03</color>
+    <color name="Off">#9aff0004</color>
+    <color name="Negro">#000000</color>
+
+</resources>
