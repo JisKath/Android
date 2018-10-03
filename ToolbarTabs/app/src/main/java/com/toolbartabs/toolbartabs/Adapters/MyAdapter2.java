@@ -25,7 +25,7 @@ import static com.toolbartabs.toolbartabs.Activities.MainActivity.MyConexionBT;
 import static com.toolbartabs.toolbartabs.Activities.MainActivity.Step;
 import static com.toolbartabs.toolbartabs.Fragments.ThirdFragment.estadoDisp;
 
-public class MyAdapter2 extends BaseAdapter{
+public class MyAdapter2 extends BaseAdapter {
 
     private Context context;
     private int layout;
@@ -42,6 +42,7 @@ public class MyAdapter2 extends BaseAdapter{
 
     @Override
     public Object getItem(int position) {return this.names.get(position);}
+
 
     @Override
     public long getItemId(int id) {return id;}
@@ -120,6 +121,9 @@ Step=4;
 
         return convertView;
     }
+
+
+
 
     static class ViewHolder {
         private TextView TextView1;

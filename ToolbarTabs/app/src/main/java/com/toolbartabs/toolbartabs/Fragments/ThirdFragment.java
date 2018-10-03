@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -157,15 +158,17 @@ public class ThirdFragment extends Fragment {
 
                 if (Step == 3) {
 
-                    if (BufferIn.length()>5) {
+                    if (BufferInFlag) {
                         BufferInFlag = false;
 
                         if(BufferIn.contains("ok...")){
                             Toast.makeText(getContext(), "Conexion Ok", Toast.LENGTH_LONG).show();
+
+
                             Step = 0;
+                            BufferIn="";
                         }
 
-                        //BufferIn="";
                     }
 
 
@@ -178,13 +181,13 @@ public class ThirdFragment extends Fragment {
                         BufferInFlag = false;
 
                         if(BufferIn.contains("ok...")){
+                            Toast.makeText(getContext(), "Conexion Ok", Toast.LENGTH_LONG).show();
 
+                            Step = 0;
+                            BufferIn="";
                         }
 
-                        BufferIn="";
                     }
-
-                    Step = 0;
 
                 }
             }
