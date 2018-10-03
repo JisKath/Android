@@ -1,6 +1,7 @@
 package com.toolbartabs.toolbartabs.Fragments;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
@@ -8,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.toolbartabs.toolbartabs.Adapters.MyAdapter;
@@ -148,6 +150,39 @@ public class ThirdFragment extends Fragment {
 
                     MyAdapter2 myAdapter2 = new MyAdapter2(getContext(), R.layout.list_item, names);
                     listView.setAdapter(myAdapter2);
+
+                    Step = 0;
+
+                }
+
+                if (Step == 3) {
+
+                    if (BufferIn.length()>5) {
+                        BufferInFlag = false;
+
+                        if(BufferIn.contains("ok...")){
+                            Toast.makeText(getContext(), "Conexion Ok", Toast.LENGTH_LONG).show();
+                            Step = 0;
+                        }
+
+                        //BufferIn="";
+                    }
+
+
+
+                }
+
+                if (Step == 4) {
+
+                    if (BufferInFlag) {
+                        BufferInFlag = false;
+
+                        if(BufferIn.contains("ok...")){
+
+                        }
+
+                        BufferIn="";
+                    }
 
                     Step = 0;
 

@@ -19,8 +19,10 @@ import com.toolbartabs.toolbartabs.R;
 
 import java.util.List;
 
+import static com.toolbartabs.toolbartabs.Activities.MainActivity.BufferIn;
 import static com.toolbartabs.toolbartabs.Activities.MainActivity.BufferInFlag;
 import static com.toolbartabs.toolbartabs.Activities.MainActivity.MyConexionBT;
+import static com.toolbartabs.toolbartabs.Activities.MainActivity.Step;
 import static com.toolbartabs.toolbartabs.Fragments.ThirdFragment.estadoDisp;
 
 public class MyAdapter2 extends BaseAdapter{
@@ -96,10 +98,10 @@ public class MyAdapter2 extends BaseAdapter{
 
             @Override
             public void onClick(View v) {
+                BufferIn="";
                 MyConexionBT.write("_sndn["+position+","+"1"+"];");
                 holder.TextView1.setTextColor(Color.GREEN);
-//                holder.ListViewAdapter.setBackgroundColor(Color.GREEN);
-
+                Step=3;
 
             }
         });
@@ -108,9 +110,11 @@ public class MyAdapter2 extends BaseAdapter{
 
             @Override
             public void onClick(View v) {
+                BufferIn="";
                 MyConexionBT.write("_sndn["+position+","+"0"+"];");
                 holder.TextView1.setTextColor(Color.RED);
-                //holder.ListViewAdapter.setBackgroundColor(Color.RED);
+Step=4;
+
             }
         });
 
