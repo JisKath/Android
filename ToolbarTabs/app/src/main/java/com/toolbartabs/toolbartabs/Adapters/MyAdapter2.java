@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,8 @@ import static com.toolbartabs.toolbartabs.Activities.MainActivity.BufferIn;
 import static com.toolbartabs.toolbartabs.Activities.MainActivity.BufferInFlag;
 import static com.toolbartabs.toolbartabs.Activities.MainActivity.MyConexionBT;
 import static com.toolbartabs.toolbartabs.Activities.MainActivity.Step;
+import static com.toolbartabs.toolbartabs.Activities.MainActivity.Trans;
+import static com.toolbartabs.toolbartabs.Activities.MainActivity.lastPos;
 import static com.toolbartabs.toolbartabs.Fragments.ThirdFragment.estadoDisp;
 
 public class MyAdapter2 extends BaseAdapter {
@@ -95,14 +98,30 @@ public class MyAdapter2 extends BaseAdapter {
 
         holder.TextView1.setText(currentName);
 
+        if (Trans==1 && (position==lastPos)){
+            holder.TextView1.setTextColor(Color.GREEN);
+            estadoDisp.set(lastPos,"1");
+            Trans=0;
+        }
+
+        if (Trans==2 && (position==lastPos)){
+            holder.TextView1.setTextColor(Color.RED);
+            estadoDisp.set(lastPos,"0");
+            Trans=0;
+        }
+
         holder.ButtonOn.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 BufferIn="";
                 MyConexionBT.write("_sndn["+position+","+"1"+"];");
-                holder.TextView1.setTextColor(Color.GREEN);
+                holder.TextView1.setTextColor(Color.DKGRAY);
+
+                lastPos=position;
+                estadoDisp.set(lastPos,"2");
                 Step=3;
+                Trans=1;
 
             }
         });
@@ -113,8 +132,12 @@ public class MyAdapter2 extends BaseAdapter {
             public void onClick(View v) {
                 BufferIn="";
                 MyConexionBT.write("_sndn["+position+","+"0"+"];");
-                holder.TextView1.setTextColor(Color.RED);
-Step=4;
+                holder.TextView1.setTextColor(Color.DKGRAY);
+
+                lastPos=position;
+                estadoDisp.set(lastPos,"2");
+                Step=4;
+                Trans=2;
 
             }
         });

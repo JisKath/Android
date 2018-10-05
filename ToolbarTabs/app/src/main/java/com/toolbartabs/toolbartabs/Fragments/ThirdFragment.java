@@ -162,10 +162,10 @@ public class ThirdFragment extends Fragment {
                         BufferInFlag = false;
 
                         if(BufferIn.contains("ok...")){
-                            Toast.makeText(getContext(), "Conexion Ok", Toast.LENGTH_LONG).show();
+                            //Toast.makeText(getContext(), "Conexion Ok", Toast.LENGTH_LONG).show();
 
 
-                            Step = 0;
+                            Step = 2;
                             BufferIn="";
                         }
 
@@ -181,9 +181,9 @@ public class ThirdFragment extends Fragment {
                         BufferInFlag = false;
 
                         if(BufferIn.contains("ok...")){
-                            Toast.makeText(getContext(), "Conexion Ok", Toast.LENGTH_LONG).show();
+                            //Toast.makeText(getContext(), "Conexion Ok", Toast.LENGTH_LONG).show();
 
-                            Step = 0;
+                            Step = 2;
                             BufferIn="";
                         }
 

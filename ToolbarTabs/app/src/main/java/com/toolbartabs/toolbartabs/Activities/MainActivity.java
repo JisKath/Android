@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Dat
     public static StringBuilder DataStringIN = new StringBuilder();
     public static String BufferIn;
     public static boolean CmdSnd, altoTest=true;
-    public static int Step=0, indice = 0;
+    public static int Step=0, Trans=0,lastPos, indice = 0;
     public static BluetoothAdapter mBtAdapter;
     public static ConnectedThread MyConexionBT;
     boolean sinRegreso;
