@@ -25,6 +25,7 @@ import static com.toolbartabs.toolbartabs.Activities.MainActivity.BufferInFlag;
 import static com.toolbartabs.toolbartabs.Activities.MainActivity.MyConexionBT;
 import static com.toolbartabs.toolbartabs.Activities.MainActivity.Step;
 import static com.toolbartabs.toolbartabs.Activities.MainActivity.Trans;
+import static com.toolbartabs.toolbartabs.Activities.MainActivity.intentosEstado;
 import static com.toolbartabs.toolbartabs.Activities.MainActivity.lastPos;
 import static com.toolbartabs.toolbartabs.Fragments.ThirdFragment.estadoDisp;
 
@@ -118,6 +119,7 @@ public class MyAdapter2 extends BaseAdapter {
                 MyConexionBT.write("_sndn["+position+","+"1"+"];");
                 holder.TextView1.setTextColor(Color.DKGRAY);
 
+                intentosEstado=0;
                 lastPos=position;
                 estadoDisp.set(lastPos,"2");
                 Step=3;
@@ -134,6 +136,7 @@ public class MyAdapter2 extends BaseAdapter {
                 MyConexionBT.write("_sndn["+position+","+"0"+"];");
                 holder.TextView1.setTextColor(Color.DKGRAY);
 
+                intentosEstado=0;
                 lastPos=position;
                 estadoDisp.set(lastPos,"2");
                 Step=4;

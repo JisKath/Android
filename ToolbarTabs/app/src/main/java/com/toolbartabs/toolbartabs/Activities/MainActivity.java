@@ -43,13 +43,12 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Dat
     public static StringBuilder DataStringIN = new StringBuilder();
     public static String BufferIn;
     public static boolean CmdSnd, altoTest=true;
-    public static int Step=0, Trans=0,lastPos, indice = 0;
+    public static int Step=0, Trans=0,lastPos, indice = 0,intentosEstado=0;
     public static BluetoothAdapter mBtAdapter;
     public static ConnectedThread MyConexionBT;
-    boolean sinRegreso;
-
     public static ArrayList<String> devices = new ArrayList<>();
     public static int tabPosition=0, tabPosition0=99, tabPositionTF=99;
+    boolean sinRegreso;
     private CountDownTimer Timer;
 
     // **********************************************************************************

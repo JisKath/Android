@@ -26,22 +26,21 @@ import static com.toolbartabs.toolbartabs.Activities.MainActivity.BufferInFlag;
 import static com.toolbartabs.toolbartabs.Activities.MainActivity.CmdSnd;
 import static com.toolbartabs.toolbartabs.Activities.MainActivity.MyConexionBT;
 import static com.toolbartabs.toolbartabs.Activities.MainActivity.Step;
+import static com.toolbartabs.toolbartabs.Activities.MainActivity.Trans;
 import static com.toolbartabs.toolbartabs.Activities.MainActivity.altoTest;
 import static com.toolbartabs.toolbartabs.Activities.MainActivity.indice;
+import static com.toolbartabs.toolbartabs.Activities.MainActivity.intentosEstado;
 import static com.toolbartabs.toolbartabs.Activities.MainActivity.tabPosition;
 
 public class ThirdFragment extends Fragment {
 
-    private ListView listView;
-    public int dispSta;
     static public List<String> names;
     static public List<String> estadoDisp;
-
-    private CountDownTimer Tick;
-
-    private boolean triggerRcvn=true;
-
     static String CmdRcvBuffer;
+    public int dispSta;
+    private ListView listView;
+    private CountDownTimer Tick;
+    private boolean triggerRcvn=true;
 
 
 
@@ -157,6 +156,7 @@ public class ThirdFragment extends Fragment {
                 }
 
                 if (Step == 3) {
+                    intentosEstado++;
 
                     if (BufferInFlag) {
                         BufferInFlag = false;
@@ -168,14 +168,18 @@ public class ThirdFragment extends Fragment {
                             Step = 2;
                             BufferIn="";
                         }
+                    }
 
+                    if (intentosEstado>35){
+                        Step=2; BufferIn=""; intentosEstado=0;Trans=0;
                     }
 
 
 
-                }
+                    }
 
                 if (Step == 4) {
+                    intentosEstado++;
 
                     if (BufferInFlag) {
                         BufferInFlag = false;
@@ -189,6 +193,9 @@ public class ThirdFragment extends Fragment {
 
                     }
 
+                    if (intentosEstado>35){
+                        Step=2; BufferIn=""; intentosEstado=0; Trans=0;
+                    }
                 }
             }
 
