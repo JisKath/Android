@@ -241,6 +241,10 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Dat
 
     // Crea la conexion BT
     public void conexionBT(String address) {
+        int intentosBT=0;
+
+        while(intentosBT<4){
+
 
         int bandera = 0;
         BT_Connected=false;
@@ -249,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Dat
         try {
             btSocket = createBluetoothSocket(device);
         } catch (IOException e) {
-            Toast.makeText(getBaseContext(), "La creacción del Socket fallo", Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(), "La creacción del Socket fallo", Toast.LENGTH_SHORT).show();
             bandera = 1;
         }
         // Establece la conexión con el socket Bluetooth.
@@ -258,7 +262,7 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Dat
         } catch (IOException e) {
             try {
                 btSocket.close();
-                Toast.makeText(getBaseContext(), "La conexion fallo", Toast.LENGTH_LONG).show();
+                Toast.makeText(getBaseContext(), "La conexion fallo", Toast.LENGTH_SHORT).show();
                 bandera = 1;
 
             } catch (IOException e2) {
@@ -270,7 +274,12 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Dat
             MyConexionBT.start();
             Toast.makeText(getBaseContext(), address, Toast.LENGTH_LONG).show();
             BT_Connected=true;
+            intentosBT=5;
         }
+
+        intentosBT++;
+
+    }
     }
 
     @Override
