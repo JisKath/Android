@@ -243,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Dat
     public void conexionBT(String address) {
         int intentosBT=0;
 
-        while(intentosBT<4){
+        while(intentosBT<3){
 
 
         int bandera = 0;
