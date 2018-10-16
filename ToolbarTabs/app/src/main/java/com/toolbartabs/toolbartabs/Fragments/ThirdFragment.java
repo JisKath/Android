@@ -1,19 +1,14 @@
 package com.toolbartabs.toolbartabs.Fragments;
 
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.toolbartabs.toolbartabs.Adapters.MyAdapter;
 import com.toolbartabs.toolbartabs.Adapters.MyAdapter2;
 import com.toolbartabs.toolbartabs.R;
 
@@ -30,7 +25,6 @@ import static com.toolbartabs.toolbartabs.Activities.MainActivity.Trans;
 import static com.toolbartabs.toolbartabs.Activities.MainActivity.altoTest;
 import static com.toolbartabs.toolbartabs.Activities.MainActivity.indice;
 import static com.toolbartabs.toolbartabs.Activities.MainActivity.intentosEstado;
-import static com.toolbartabs.toolbartabs.Activities.MainActivity.tabPosition;
 
 public class ThirdFragment extends Fragment {
 
@@ -148,7 +142,7 @@ public class ThirdFragment extends Fragment {
 
                 if (Step == 2) {
 
-                    MyAdapter2 myAdapter2 = new MyAdapter2(getContext(), R.layout.list_item, names);
+                    MyAdapter2 myAdapter2 = new MyAdapter2(getContext(), R.layout.list_item1, names);
                     listView.setAdapter(myAdapter2);
 
                     Step = 0;
