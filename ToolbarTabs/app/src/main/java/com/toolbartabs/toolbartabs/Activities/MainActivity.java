@@ -96,9 +96,9 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Dat
 
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
-        tabLayout.addTab(tabLayout.newTab().setText("Lista BT"));
+        tabLayout.addTab(tabLayout.newTab().setText("Config"));
         tabLayout.addTab(tabLayout.newTab().setText("Dispositivos"));
-        tabLayout.addTab(tabLayout.newTab().setText("Monitor"));
+        tabLayout.addTab(tabLayout.newTab().setText("Disp BT"));
 //        tabLayout.addTab(tabLayout.newTab().setText("Escenas"));
         tabLayout.setTabGravity(tabLayout.GRAVITY_FILL);
 
@@ -113,6 +113,9 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Dat
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 int position = tab.getPosition();
+
+                //if(listaBT){position=2;}
+
                 tabPosition = tab.getPosition();
                 if (BT_Connected==false){
                     position=0;
@@ -128,6 +131,7 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Dat
                 if(position==0 & sinRegreso==true){
                     position=1;
                 }
+
 
                     viewPager.setCurrentItem(position);
             }

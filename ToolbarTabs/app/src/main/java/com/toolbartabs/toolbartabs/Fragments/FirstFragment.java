@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +23,8 @@ import static com.toolbartabs.toolbartabs.Activities.MainActivity.tabPosition;
 public class FirstFragment extends Fragment {
     private ListView IdLista;
     private Datalistener callback;
+    TextView IdTextBTaddrs;
+    Button IdBtnScanBT,IdBtnConectarBT,IdBtnRescan;
 
     public FirstFragment() {
     }
@@ -45,12 +48,45 @@ public class FirstFragment extends Fragment {
 
         IdLista = (ListView) view.findViewById(R.id.IdListViewA);
         IdLista.setOnItemClickListener(mDeviceClickListener);
+        IdTextBTaddrs = (TextView) view.findViewById(R.id.IdTextBTaddrs);
+        IdBtnConectarBT = (Button) view.findViewById(R.id.IdBtnConectarBT);
+        IdBtnScanBT = (Button) view.findViewById(R.id.IdBtnScanBT);
+        IdBtnRescan = (Button) view.findViewById(R.id.IdBtnRescan);
 
-        ArrayAdapter<String> mPairedDevicesArrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, devices);
-        IdLista.setAdapter(mPairedDevicesArrayAdapter);
+        //ArrayAdapter<String> mPairedDevicesArrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, devices);
+        //IdLista.setAdapter(mPairedDevicesArrayAdapter);
+
+        IdTextBTaddrs.setText("Ehhh");
+        //IdLista.setEnabled(false);
 
         return view;
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+
+
+        IdBtnScanBT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //IdLista.setEnabled(true);
+                ArrayAdapter<String> mPairedDevicesArrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, devices);
+                IdLista.setAdapter(mPairedDevicesArrayAdapter);
+
+            }
+        });
+
+        IdBtnConectarBT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                callback.sendData((String) IdTextBTaddrs.getText().toString());
+
+            }
+        });
     }
 
     // Configura un (on-click) para la lista
@@ -61,10 +97,13 @@ public class FirstFragment extends Fragment {
             String info = ((TextView) v).getText().toString();
             String address = info.substring(info.length() - 17);
 
-            callback.sendData(address);
+            //callback.sendData(address);
+            IdTextBTaddrs.setText(address);
+
         }
 
     };
+
 
     public interface Datalistener {
         void sendData(String address);
