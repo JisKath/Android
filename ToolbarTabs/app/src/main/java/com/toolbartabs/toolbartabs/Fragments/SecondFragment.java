@@ -2,6 +2,7 @@ package com.toolbartabs.toolbartabs.Fragments;
 
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
@@ -18,8 +19,8 @@ import com.toolbartabs.toolbartabs.R;
 
 import java.util.Timer;
 
-import static com.toolbartabs.toolbartabs.Activities.MainActivity.BufferIn;
 import static com.toolbartabs.toolbartabs.Activities.MainActivity.BufferInFlag;
+import static com.toolbartabs.toolbartabs.Activities.MainActivity.BufferInW;
 import static com.toolbartabs.toolbartabs.Activities.MainActivity.tabPosition;
 
 public class SecondFragment extends Fragment {
@@ -78,13 +79,14 @@ public class SecondFragment extends Fragment {
 
                 IdTxtMonitor.setText(String.valueOf(IdTxtMonitor.getText()) + IdBufferIn.getText() + "\n");
                 String Temporal = String.valueOf(IdBufferIn.getText());
-                MainActivity.MyConexionBT.write(Temporal);
+                new MainActivity.SendMessageTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,String.valueOf(Temporal));
+
             }
         });
         IdBtnBorrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BufferIn= "";
+                BufferInW= "";
                 IdTxtMonitor.setText("");
             }
         });

@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -28,59 +29,28 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
 
+import static com.toolbartabs.toolbartabs.Activities.TcpClient.mRun;
 import static com.toolbartabs.toolbartabs.Fragments.SecondFragment.Monitor;
 
 public class MainActivity extends AppCompatActivity implements FirstFragment.Datalistener {
-    public static final int handlerState = 0;
-    //1) ********************* Lineas para dar de alta BT ********************************
-    // Depuración de LOGCAT
-    private static final UUID BTMODULEUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-    public static BluetoothSocket btSocket = null;
 
     // Declaracion de campos
-    public static Handler bluetoothIn;
     public static boolean BufferInFlag, BT_Connected;
     public static StringBuilder DataStringIN = new StringBuilder();
-    public static String BufferIn;
+    public static String BufferInW;
     public static boolean CmdSnd, altoTest=true;
     public static int Step=0, Trans=0,lastPos, indice = 0,intentosEstado=0;
-    public static BluetoothAdapter mBtAdapter;
-    public static ConnectedThread MyConexionBT;
     public static ArrayList<String> devices = new ArrayList<>();
     public static int tabPosition=0, tabPosition0=99, tabPositionTF=99;
     boolean sinRegreso;
     private CountDownTimer Timer;
 
-    // **********************************************************************************
-
-    //1) ********************* Lineas para dar de alta BT ********************************
-    public static BluetoothSocket createBluetoothSocket(BluetoothDevice device) throws IOException {
-        //crea un conexion de salida segura para el dispositivo
-        //usando el servicio UUID
-        return device.createRfcommSocketToServiceRecord(BTMODULEUUID);
-    }
+    public static TcpClient mTcpClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        //1) ********************* Lineas para dar de alta BT ********************************
-        mBtAdapter = BluetoothAdapter.getDefaultAdapter();
-
-        if (mBtAdapter == null) {
-            Toast.makeText(getBaseContext(), "El dispositivo no soporta Bluetooth", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(getBaseContext(), "Dispositivo soporta BT", Toast.LENGTH_SHORT).show();
-
-            if (!mBtAdapter.isEnabled()) {
-                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(enableBtIntent, 1);
-            }
-
-        }
-
-        // **********************************************************************************
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
@@ -117,19 +87,19 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Dat
                 //if(listaBT){position=2;}
 
                 tabPosition = tab.getPosition();
-                if (BT_Connected==false){
+                if (mRun==false){
                     position=0;
                     tabPosition=0;
                     sinRegreso = false;
                     Toast.makeText(getBaseContext(), "Conectar a controlador", Toast.LENGTH_SHORT).show();
                 }
 
-                if((position== 1) & BT_Connected==true){
+                if((position== 1) & mRun==true){
                     sinRegreso = true;
                 }
 
                 if(position==0 & sinRegreso==true){
-                    position=1;
+                    //position=1;
                 }
 
 
@@ -155,36 +125,7 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Dat
     public void onResume() {
         super.onResume();
 
-        bluetoothIn = new Handler() {
-            public void handleMessage(android.os.Message msg) {
-                if (msg.what == handlerState) {
-                    String readMessage = (String) msg.obj;
-                    DataStringIN.append(readMessage);
-
-                    int endOfLineIndex = DataStringIN.indexOf(";");
-
-                    if (endOfLineIndex > 0) {
-                        String dataInPrint = DataStringIN.substring(0, endOfLineIndex);
-                        BufferIn = (dataInPrint);//<-<- PARTE A MODIFICAR >->->
-                        DataStringIN.delete(0, DataStringIN.length());
-                        BufferInFlag = true;
-                    }
-                }
-            }
-        };
-
-        mBtAdapter = BluetoothAdapter.getDefaultAdapter();
-
-        Set<BluetoothDevice> pairedDevices = mBtAdapter.getBondedDevices();
-
-        if (pairedDevices.size() > 0) {
-
-            // Datos a Mostrar
-            for (BluetoothDevice device : pairedDevices) {
-                // Add the name and address to an array adapter to show in a ListView
-                devices.add(device.getName() + "\n" + device.getAddress());
-            }
-        }
+        new ConnectTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
         Timer = new
 
@@ -207,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Dat
 
                             if (tabPositionTF!=tabPosition) {
 
-                                MyConexionBT.write("_rall");
+                                new SendMessageTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"_rall");
                                 CmdSnd = true;
                                 tabPositionTF = tabPosition;
                             }
@@ -215,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Dat
 
                         if (tabPosition==2){
 
-                            Monitor=BufferIn;
+                            Monitor=BufferInW;
                             tabPositionTF = tabPosition;
 
                         }
@@ -243,105 +184,81 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Dat
         Timer.cancel();
     }
 
-    // Crea la conexion BT
-    public void conexionBT(String address) {
-        int intentosBT=0;
-
-        while(intentosBT<3){
-
-
-        int bandera = 0;
-        BT_Connected=false;
-        BluetoothDevice device = mBtAdapter.getRemoteDevice(address);
-
-        try {
-            btSocket = createBluetoothSocket(device);
-        } catch (IOException e) {
-            Toast.makeText(getBaseContext(), "La creacción del Socket fallo", Toast.LENGTH_SHORT).show();
-            bandera = 1;
-        }
-        // Establece la conexión con el socket Bluetooth.
-        try {
-            btSocket.connect();
-        } catch (IOException e) {
-            try {
-                btSocket.close();
-                Toast.makeText(getBaseContext(), "La conexion fallo", Toast.LENGTH_SHORT).show();
-                bandera = 1;
-
-            } catch (IOException e2) {
-            }
-        }
-
-        if (bandera != 1) {
-            MyConexionBT = new ConnectedThread(btSocket);
-            MyConexionBT.start();
-            Toast.makeText(getBaseContext(), address, Toast.LENGTH_LONG).show();
-            BT_Connected=true;
-            intentosBT=5;
-        }
-
-        intentosBT++;
-
-    }
-    }
-
     @Override
     public void sendData(String address) {
-        conexionBT(address);
+        //conexionBT(address);
 
     }
 
-public void datos(String Datos){
+    public static class SendMessageTask extends AsyncTask<String,Void,Void> {
 
+        @Override
+        protected Void doInBackground(String... params) {
 
-}
-
-
-    //Crea la clase que permite crear el evento de conexion
-    public class ConnectedThread extends Thread {
-        private final InputStream mmInStream;
-        private final OutputStream mmOutStream;
-
-        public ConnectedThread(BluetoothSocket socket) {
-            InputStream tmpIn = null;
-            OutputStream tmpOut = null;
-            try {
-                tmpIn = socket.getInputStream();
-                tmpOut = socket.getOutputStream();
-            } catch (IOException e) {
-            }
-            mmInStream = tmpIn;
-            mmOutStream = tmpOut;
+            // send the message
+            mTcpClient.sendMessage(params[0]);
+            return null;
         }
 
-        public void run() {
-            byte[] buffer = new byte[256];
-            int bytes;
+        @Override
+        protected void onPostExecute(Void nothing) {
+            super.onPostExecute(nothing);
+            // clear the data set
+            //arrayList.clear();
+            // notify the adapter that the data set has changed.
+            //mAdapter.notifyDataSetChanged();
+        }
+    }
 
-            // Se mantiene en modo escucha para determinar el ingreso de datos
-            while (true) {
-                try {
-                    bytes = mmInStream.read(buffer);
-                    String readMessage = new String(buffer, 0, bytes);
-                    // Envia los datos obtenidos hacia el evento via handler
-                    bluetoothIn.obtainMessage(handlerState, bytes, -1, readMessage).sendToTarget();
-                } catch (IOException e) {
-                    break;
+    /**
+     * Disconnects using a background task to avoid doing long/network operations on the UI thread
+     */
+    public class DisconnectTask extends AsyncTask<Void, Void, Void> {
+        protected Void doInBackground(Void... voids) {
+
+            // disconnect
+            mTcpClient.stopClient();
+            mTcpClient = null;
+
+            return null;
+        }
+
+
+        protected void onPostExecute(Void nothing) {
+            super.onPostExecute(nothing);
+            // clear the data set
+            //arrayList.clear();
+            // notify the adapter that the data set has changed.
+            //mAdapter.notifyDataSetChanged();
+        }
+    }
+
+    public class ConnectTask extends AsyncTask<String, String, TcpClient> {
+
+        @Override
+        protected TcpClient doInBackground(String... message) {
+
+            //we create a TCPClient object and
+            mTcpClient = new TcpClient(new TcpClient.OnMessageReceived() {
+                @Override
+                //here the messageReceived method is implemented
+                public void messageReceived(String message) {
+                    //this method calls the onProgressUpdate
+                    publishProgress(message);
                 }
-            }
+            });
+            mTcpClient.run();
+
+            return null;
         }
 
-        //Envio de trama
-        public void write(String input) {
-            try {
-                mmOutStream.write(input.getBytes());
-            } catch (IOException e) {
-                // si no es posible enviar datos se cierra la conexión
-                Toast.makeText(getBaseContext(), "La Conexión falloo", Toast.LENGTH_LONG).show();
-                //BT_Connected=false;
-                finish();
-            }
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+            BufferInW=BufferInW+values[0];//+"\n";
+//            Datos.setText(Datos.getText()+String.valueOf(String.valueOf(values[0]))+"\n");
+            // notify the adapter that the data set has changed. This means that new message received
+            // from server was added to the list
         }
     }
 }

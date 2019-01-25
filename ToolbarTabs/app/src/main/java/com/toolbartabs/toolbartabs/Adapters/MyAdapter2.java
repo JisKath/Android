@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,13 +17,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.toolbartabs.toolbartabs.Activities.MainActivity;
 import com.toolbartabs.toolbartabs.R;
 
 import java.util.List;
 
-import static com.toolbartabs.toolbartabs.Activities.MainActivity.BufferIn;
 import static com.toolbartabs.toolbartabs.Activities.MainActivity.BufferInFlag;
-import static com.toolbartabs.toolbartabs.Activities.MainActivity.MyConexionBT;
+import static com.toolbartabs.toolbartabs.Activities.MainActivity.BufferInW;
 import static com.toolbartabs.toolbartabs.Activities.MainActivity.Step;
 import static com.toolbartabs.toolbartabs.Activities.MainActivity.Trans;
 import static com.toolbartabs.toolbartabs.Activities.MainActivity.intentosEstado;
@@ -115,8 +116,9 @@ public class MyAdapter2 extends BaseAdapter {
 
             @Override
             public void onClick(View v) {
-                BufferIn="";
-                MyConexionBT.write("_sndn["+position+","+"1"+"];");
+                BufferInW="";
+                new MainActivity.SendMessageTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,String.valueOf("_sndn["+position+","+"1"+"];"));
+
                 holder.TextView1.setTextColor(Color.DKGRAY);
 
                 intentosEstado=0;
@@ -132,8 +134,9 @@ public class MyAdapter2 extends BaseAdapter {
 
             @Override
             public void onClick(View v) {
-                BufferIn="";
-                MyConexionBT.write("_sndn["+position+","+"0"+"];");
+                BufferInW="";
+                new MainActivity.SendMessageTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,String.valueOf("_sndn["+position+","+"0"+"];"));
+
                 holder.TextView1.setTextColor(Color.DKGRAY);
 
                 intentosEstado=0;

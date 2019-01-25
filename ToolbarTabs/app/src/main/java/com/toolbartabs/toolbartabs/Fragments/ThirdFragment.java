@@ -1,6 +1,7 @@
 package com.toolbartabs.toolbartabs.Fragments;
 
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.toolbartabs.toolbartabs.Activities.MainActivity;
 import com.toolbartabs.toolbartabs.Adapters.MyAdapter2;
 import com.toolbartabs.toolbartabs.R;
 
@@ -16,10 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.toolbartabs.toolbartabs.Activities.Comandos.Listrall;
-import static com.toolbartabs.toolbartabs.Activities.MainActivity.BufferIn;
 import static com.toolbartabs.toolbartabs.Activities.MainActivity.BufferInFlag;
+import static com.toolbartabs.toolbartabs.Activities.MainActivity.BufferInW;
 import static com.toolbartabs.toolbartabs.Activities.MainActivity.CmdSnd;
-import static com.toolbartabs.toolbartabs.Activities.MainActivity.MyConexionBT;
 import static com.toolbartabs.toolbartabs.Activities.MainActivity.Step;
 import static com.toolbartabs.toolbartabs.Activities.MainActivity.Trans;
 import static com.toolbartabs.toolbartabs.Activities.MainActivity.altoTest;
@@ -61,6 +62,8 @@ public class ThirdFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
+
+
         Tick = new CountDownTimer(5000, 150) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -70,12 +73,12 @@ public class ThirdFragment extends Fragment {
 
                     if (CmdSnd & altoTest) {
 
-                        CmdRcvBuffer = BufferIn;
+                        CmdRcvBuffer = BufferInW;
                         names = Listrall(CmdRcvBuffer);
 
 
                         CmdSnd = false;
-                        BufferIn = "";
+                        BufferInW = "";
                         altoTest = false;
                         Step = 1;
                     }
@@ -93,18 +96,19 @@ public class ThirdFragment extends Fragment {
                         if(triggerRcvn)
                         {
                             String Adrr="_rcvn["+indice+"]";
-                            MyConexionBT.write(Adrr);
+                            new MainActivity.SendMessageTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,String.valueOf(Adrr));
+
                             triggerRcvn=false;
                         }
 
                         if (BufferInFlag) {
                             BufferInFlag = false;
                             String Temp;
-                            if(BufferIn.contains("Falla")){
+                            if(BufferInW.contains("Falla")){
                                 Temp = "Resp del Dispositivo: 3";
                             }
                             else {
-                                Temp = BufferIn.substring(BufferIn.indexOf("Resp del Dispositivo: "), BufferIn.length());
+                                Temp = BufferInW.substring(BufferInW.indexOf("Resp del Dispositivo: "), BufferInW.length());
                             }
                             if(Temp.contains(" 1")){
                                 dispSta=1;
@@ -121,7 +125,7 @@ public class ThirdFragment extends Fragment {
 
                             estadoDisp.add(String.valueOf(dispSta));
                             indice++;
-                            BufferIn="";
+                            BufferInW="";
                         }
 
 
@@ -136,7 +140,7 @@ public class ThirdFragment extends Fragment {
                         }
 
                     CmdSnd = false;
-                    BufferIn = "";
+                    BufferInW = "";
 
                 }
 
@@ -155,17 +159,17 @@ public class ThirdFragment extends Fragment {
                     if (BufferInFlag) {
                         BufferInFlag = false;
 
-                        if(BufferIn.contains("ok...")){
+                        if(BufferInW.contains("ok...")){
                             //Toast.makeText(getContext(), "Conexion Ok", Toast.LENGTH_LONG).show();
 
 
                             Step = 2;
-                            BufferIn="";
+                            BufferInW="";
                         }
                     }
 
                     if (intentosEstado>35){
-                        Step=2; BufferIn=""; intentosEstado=0;Trans=0;
+                        Step=2; BufferInW=""; intentosEstado=0;Trans=0;
                     }
 
 
@@ -178,17 +182,17 @@ public class ThirdFragment extends Fragment {
                     if (BufferInFlag) {
                         BufferInFlag = false;
 
-                        if(BufferIn.contains("ok...")){
+                        if(BufferInW.contains("ok...")){
                             //Toast.makeText(getContext(), "Conexion Ok", Toast.LENGTH_LONG).show();
 
                             Step = 2;
-                            BufferIn="";
+                            BufferInW="";
                         }
 
                     }
 
                     if (intentosEstado>35){
-                        Step=2; BufferIn=""; intentosEstado=0; Trans=0;
+                        Step=2; BufferInW=""; intentosEstado=0; Trans=0;
                     }
                 }
             }
