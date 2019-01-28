@@ -87,12 +87,12 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Dat
                 //if(listaBT){position=2;}
 
                 tabPosition = tab.getPosition();
-                if (mRun==false){
+/*                if (mRun==false){
                     position=0;
                     tabPosition=0;
                     sinRegreso = false;
                     Toast.makeText(getBaseContext(), "Conectar a controlador", Toast.LENGTH_SHORT).show();
-                }
+                }*/
 
                 if((position== 1) & mRun==true){
                     sinRegreso = true;
@@ -125,11 +125,9 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Dat
     public void onResume() {
         super.onResume();
 
-        new ConnectTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+//        new ConnectTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
-        Timer = new
-
-                CountDownTimer(30000, 50) {
+        Timer = new CountDownTimer(30000, 50) {
                     @Override
                     public void onTick(long millisUntilFinished) {
 
@@ -148,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Dat
 
                             if (tabPositionTF!=tabPosition) {
 
-                                new SendMessageTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"_rall");
+//                                new SendMessageTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"_rall");
                                 CmdSnd = true;
                                 tabPositionTF = tabPosition;
                             }

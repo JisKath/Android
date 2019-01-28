@@ -62,8 +62,25 @@ public class ThirdFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
+        estadoDisp.add("Hola");
+
+        if (BufferInFlag & Step == 0) {
+            BufferInFlag = false;
+
+            if (CmdSnd & altoTest) {
+
+                CmdRcvBuffer = BufferInW;
+                names = Listrall(CmdRcvBuffer);
 
 
+                CmdSnd = false;
+                BufferInW = "";
+                altoTest = false;
+                Step = 1;
+            }
+        }
+
+/*
         Tick = new CountDownTimer(5000, 150) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -203,7 +220,7 @@ public class ThirdFragment extends Fragment {
 
             }
         }.start();
-
+*/
 
     }
 }

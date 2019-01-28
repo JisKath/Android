@@ -117,7 +117,7 @@ public class MyAdapter2 extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 BufferInW="";
-                new MainActivity.SendMessageTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,String.valueOf("_sndn["+position+","+"1"+"];"));
+      //          new MainActivity.SendMessageTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,String.valueOf("_sndn["+position+","+"1"+"];"));
 
                 holder.TextView1.setTextColor(Color.DKGRAY);
 
