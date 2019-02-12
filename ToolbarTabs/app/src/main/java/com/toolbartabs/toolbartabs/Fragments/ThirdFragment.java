@@ -1,16 +1,16 @@
 package com.toolbartabs.toolbartabs.Fragments;
 
 
-import android.os.AsyncTask;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.toolbartabs.toolbartabs.Activities.MainActivity;
 import com.toolbartabs.toolbartabs.Adapters.MyAdapter2;
 import com.toolbartabs.toolbartabs.R;
 
@@ -29,14 +29,20 @@ import static com.toolbartabs.toolbartabs.Activities.MainActivity.intentosEstado
 
 public class ThirdFragment extends Fragment {
 
+    public static Fragment3Listener listener;
+
+    public interface Fragment3Listener{
+        void onInput3Sent(String input);
+    }
+
     static public List<String> names;
     static public List<String> estadoDisp;
-    static String CmdRcvBuffer;
+    public static String CmdRcvBuffer, Adrr;
+    public static boolean SendMensaje = false;
     public int dispSta;
     private ListView listView;
     private CountDownTimer Tick;
-    private boolean triggerRcvn=true;
-
+    private boolean triggerRcvn = true;
 
 
     public ThirdFragment() {
@@ -56,37 +62,27 @@ public class ThirdFragment extends Fragment {
 
 
         return view;
+
+
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
-        estadoDisp.add("Hola");
-
-        if (BufferInFlag & Step == 0) {
-            BufferInFlag = false;
-
-            if (CmdSnd & altoTest) {
-
-                CmdRcvBuffer = BufferInW;
-                names = Listrall(CmdRcvBuffer);
+        Tick = new CountDownTimer(5000, 250) {
 
 
-                CmdSnd = false;
-                BufferInW = "";
-                altoTest = false;
-                Step = 1;
-            }
-        }
-
-/*
-        Tick = new CountDownTimer(5000, 150) {
             @Override
             public void onTick(long millisUntilFinished) {
 
                 if (BufferInFlag & Step == 0) {
-                    BufferInFlag = false;
 
                     if (CmdSnd & altoTest) {
 
@@ -95,6 +91,7 @@ public class ThirdFragment extends Fragment {
 
 
                         CmdSnd = false;
+                        BufferInFlag = false;
                         BufferInW = "";
                         altoTest = false;
                         Step = 1;
@@ -106,55 +103,54 @@ public class ThirdFragment extends Fragment {
 
                     //BufferInFlag = false;
 
-                    dispSta=2;
+                    dispSta = 2;
 
                     if (names.get(indice).length() > 4) {
 
-                        if(triggerRcvn)
-                        {
-                            String Adrr="_rcvn["+indice+"]";
-                            new MainActivity.SendMessageTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,String.valueOf(Adrr));
-
-                            triggerRcvn=false;
+                        if (triggerRcvn) {
+                            Adrr = "_rcvn[" + indice + "]";
+                            listener.onInput3Sent(Adrr);
+/*                            if(!BufferInFlag) {
+                                SendMensaje = true;
+                            }*/
+                            triggerRcvn = false;
                         }
 
                         if (BufferInFlag) {
                             BufferInFlag = false;
                             String Temp;
-                            if(BufferInW.contains("Falla")){
+                            if (BufferInW.contains("Falla")) {
                                 Temp = "Resp del Dispositivo: 3";
-                            }
-                            else {
+                            } else {
                                 Temp = BufferInW.substring(BufferInW.indexOf("Resp del Dispositivo: "), BufferInW.length());
                             }
-                            if(Temp.contains(" 1")){
-                                dispSta=1;
+                            if (Temp.contains(" 1")) {
+                                dispSta = 1;
                             }
-                            if(Temp.contains(" 0")){
-                                dispSta=0;
-                            }
-
-                            if(Temp.contains(" 3")){
-                                dispSta=3;
+                            if (Temp.contains(" 0")) {
+                                dispSta = 0;
                             }
 
-                            triggerRcvn=true;
+                            if (Temp.contains(" 3")) {
+                                dispSta = 3;
+                            }
+
+                            triggerRcvn = true;
 
                             estadoDisp.add(String.valueOf(dispSta));
                             indice++;
-                            BufferInW="";
+                            BufferInW = "";
                         }
 
 
-                    }
-                    else{
+                    } else {
                         estadoDisp.add(String.valueOf(dispSta));
                         indice++;
                     }
 
-                        if (indice == names.size()) {
-                            Step = 2;
-                        }
+                    if (indice == names.size()) {
+                        Step = 2;
+                    }
 
                     CmdSnd = false;
                     BufferInW = "";
@@ -176,22 +172,22 @@ public class ThirdFragment extends Fragment {
                     if (BufferInFlag) {
                         BufferInFlag = false;
 
-                        if(BufferInW.contains("ok...")){
+                        if (BufferInW.contains("ok...")) {
                             //Toast.makeText(getContext(), "Conexion Ok", Toast.LENGTH_LONG).show();
 
 
                             Step = 2;
-                            BufferInW="";
+                            BufferInW = "";
                         }
                     }
 
-                    if (intentosEstado>35){
-                        Step=2; BufferInW=""; intentosEstado=0;Trans=0;
+                    if (intentosEstado > 35) {
+                        Step = 2;
+                        BufferInW = "";
+                        intentosEstado = 0;
+                        Trans = 0;
                     }
-
-
-
-                    }
+                }
 
                 if (Step == 4) {
                     intentosEstado++;
@@ -199,28 +195,55 @@ public class ThirdFragment extends Fragment {
                     if (BufferInFlag) {
                         BufferInFlag = false;
 
-                        if(BufferInW.contains("ok...")){
+                        if (BufferInW.contains("ok...")) {
                             //Toast.makeText(getContext(), "Conexion Ok", Toast.LENGTH_LONG).show();
 
                             Step = 2;
-                            BufferInW="";
+                            BufferInW = "";
                         }
 
                     }
 
-                    if (intentosEstado>35){
-                        Step=2; BufferInW=""; intentosEstado=0; Trans=0;
+                    if (intentosEstado > 35) {
+                        Step = 2;
+                        BufferInW = "";
+                        intentosEstado = 0;
+                        Trans = 0;
                     }
                 }
+
+
             }
 
             @Override
             public void onFinish() {
                 Tick.start();
-
             }
         }.start();
-*/
+    }
+
+    public void enviarMensaje(String input){
+
 
     }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if(context instanceof Fragment3Listener){
+            listener=(Fragment3Listener) context;
+        }else {
+            throw new RuntimeException(context.toString()
+            + "must implement Fragment3Listener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener=null;
+    }
 }
+
+
+

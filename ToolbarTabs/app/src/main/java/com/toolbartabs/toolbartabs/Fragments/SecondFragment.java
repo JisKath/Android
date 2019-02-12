@@ -1,8 +1,6 @@
 package com.toolbartabs.toolbartabs.Fragments;
 
 
-import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
@@ -12,12 +10,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.toolbartabs.toolbartabs.Activities.MainActivity;
 import com.toolbartabs.toolbartabs.R;
-
-import java.util.Timer;
 
 import static com.toolbartabs.toolbartabs.Activities.MainActivity.BufferInFlag;
 import static com.toolbartabs.toolbartabs.Activities.MainActivity.BufferInW;
@@ -79,7 +73,7 @@ public class SecondFragment extends Fragment {
 
                 IdTxtMonitor.setText(String.valueOf(IdTxtMonitor.getText()) + IdBufferIn.getText() + "\n");
                 String Temporal = String.valueOf(IdBufferIn.getText());
-                new MainActivity.SendMessageTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,String.valueOf(Temporal));
+//                new MainActivity.SendMessageTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,String.valueOf(Temporal));
 
             }
         });

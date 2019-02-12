@@ -12,17 +12,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.toolbartabs.toolbartabs.Activities.MainActivity;
 import com.toolbartabs.toolbartabs.R;
 
 import static com.toolbartabs.toolbartabs.Activities.MainActivity.devices;
-import static com.toolbartabs.toolbartabs.Activities.MainActivity.tabPosition;
 
 public class FirstFragment extends Fragment {
     private ListView IdLista;
-    private Datalistener callback;
+    //private Datalistener callback;
     TextView IdTextBTaddrs;
     Button IdBtnScanBT,IdBtnConectarBT,IdBtnRescan;
 
@@ -33,11 +30,11 @@ public class FirstFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        try {
+/*        try {
             callback = (Datalistener) context;
         } catch (Exception e) {
             throw new ClassCastException(context.toString() + "Should implement DataListener");
-        }
+        }*/
 
     }
 
@@ -83,7 +80,9 @@ public class FirstFragment extends Fragment {
         IdBtnConectarBT.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+/*
                 callback.sendData((String) IdTextBTaddrs.getText().toString());
+*/
 
             }
         });
@@ -105,8 +104,8 @@ public class FirstFragment extends Fragment {
     };
 
 
-    public interface Datalistener {
+/*    public interface Datalistener {
         void sendData(String address);
-    }
+    }*/
 
 }

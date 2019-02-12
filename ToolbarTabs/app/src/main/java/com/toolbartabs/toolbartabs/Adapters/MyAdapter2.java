@@ -1,28 +1,20 @@
 package com.toolbartabs.toolbartabs.Adapters;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.os.AsyncTask;
-import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.ToggleButton;
 
-import com.toolbartabs.toolbartabs.Activities.MainActivity;
+import com.toolbartabs.toolbartabs.Fragments.ThirdFragment;
 import com.toolbartabs.toolbartabs.R;
 
 import java.util.List;
 
-import static com.toolbartabs.toolbartabs.Activities.MainActivity.BufferInFlag;
 import static com.toolbartabs.toolbartabs.Activities.MainActivity.BufferInW;
 import static com.toolbartabs.toolbartabs.Activities.MainActivity.Step;
 import static com.toolbartabs.toolbartabs.Activities.MainActivity.Trans;
@@ -117,7 +109,8 @@ public class MyAdapter2 extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 BufferInW="";
-      //          new MainActivity.SendMessageTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,String.valueOf("_sndn["+position+","+"1"+"];"));
+                ThirdFragment.listener.onInput3Sent("_sndn["+position+","+"1"+"];");
+                //new MainActivity.SendMessageTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,String.valueOf("_sndn["+position+","+"1"+"];"));
 
                 holder.TextView1.setTextColor(Color.DKGRAY);
 
@@ -135,7 +128,9 @@ public class MyAdapter2 extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 BufferInW="";
-                new MainActivity.SendMessageTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,String.valueOf("_sndn["+position+","+"0"+"];"));
+
+                ThirdFragment.listener.onInput3Sent(String.valueOf("_sndn["+position+","+"0"+"];"));
+                //new MainActivity.SendMessageTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,String.valueOf("_sndn["+position+","+"0"+"];"));
 
                 holder.TextView1.setTextColor(Color.DKGRAY);
 

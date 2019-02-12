@@ -1,51 +1,38 @@
 package com.toolbartabs.toolbartabs.Activities;
 
-import android.app.FragmentManager;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.toolbartabs.toolbartabs.Adapters.PagerAdapter;
-import com.toolbartabs.toolbartabs.Fragments.FirstFragment;
-import com.toolbartabs.toolbartabs.Fragments.SecondFragment;
 import com.toolbartabs.toolbartabs.Fragments.ThirdFragment;
 import com.toolbartabs.toolbartabs.R;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Set;
-import java.util.UUID;
 
 import static com.toolbartabs.toolbartabs.Activities.TcpClient.mRun;
 import static com.toolbartabs.toolbartabs.Fragments.SecondFragment.Monitor;
 
-public class MainActivity extends AppCompatActivity implements FirstFragment.Datalistener {
+public class MainActivity extends AppCompatActivity implements ThirdFragment.Fragment3Listener{
+    //implements FirstFragment.Datalistener{
 
     // Declaracion de campos
     public static boolean BufferInFlag, BT_Connected;
     public static StringBuilder DataStringIN = new StringBuilder();
     public static String BufferInW;
-    public static boolean CmdSnd, altoTest=true;
-    public static int Step=0, Trans=0,lastPos, indice = 0,intentosEstado=0;
+    public static boolean CmdSnd, altoTest = true;
+    public static int Step = 0, Trans = 0, lastPos, indice = 0, intentosEstado = 0;
     public static ArrayList<String> devices = new ArrayList<>();
-    public static int tabPosition=0, tabPosition0=99, tabPositionTF=99;
+    public static int tabPosition = 0, tabPosition0 = 99, tabPositionTF = 99;
     boolean sinRegreso;
     private CountDownTimer Timer;
 
-    public static TcpClient mTcpClient;
+    public TcpClient mTcpClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +51,6 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Dat
         }*/
 
 
-
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.addTab(tabLayout.newTab().setText("Config"));
         tabLayout.addTab(tabLayout.newTab().setText("Dispositivos"));
@@ -79,6 +65,9 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Dat
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
+        new ConnectTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -87,23 +76,23 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Dat
                 //if(listaBT){position=2;}
 
                 tabPosition = tab.getPosition();
-/*                if (mRun==false){
+                if (!mRun){
                     position=0;
                     tabPosition=0;
                     sinRegreso = false;
                     Toast.makeText(getBaseContext(), "Conectar a controlador", Toast.LENGTH_SHORT).show();
-                }*/
+                }
 
-                if((position== 1) & mRun==true){
+                if ((position == 1) & mRun == true) {
                     sinRegreso = true;
                 }
 
-                if(position==0 & sinRegreso==true){
+                if (position == 0 & sinRegreso == true) {
                     //position=1;
                 }
 
 
-                    viewPager.setCurrentItem(position);
+                viewPager.setCurrentItem(position);
             }
 
             @Override
@@ -121,56 +110,58 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Dat
     }
     // **********************************************************************************
 
+
+    @Override
+    public void onInput3Sent(String input) {
+        new SendMessageTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,String.valueOf(input));
+
+    }
+
     @Override
     public void onResume() {
         super.onResume();
 
-//        new ConnectTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        Timer = new CountDownTimer(30000, 150) {
+            @Override
+            public void onTick(long millisUntilFinished) {
 
-        Timer = new CountDownTimer(30000, 50) {
-                    @Override
-                    public void onTick(long millisUntilFinished) {
-
-                        if (tabPosition0!=tabPosition) {
+                if (tabPosition0!=tabPosition) {
 //                            Toast.makeText(getBaseContext(), "Pagina " + tabPosition, Toast.LENGTH_SHORT).show();
-                            tabPosition0=tabPosition;
-                        }
+                    tabPosition0=tabPosition;
+                }
 
-                        if (tabPosition==0){
+                if (tabPosition==0){
 
-                            tabPositionTF = tabPosition;
+                    tabPositionTF = tabPosition;
 
-                        }
+                }
 
-                        if (tabPosition==1){
+                if (tabPosition==1){
 
-                            if (tabPositionTF!=tabPosition) {
+                    if (tabPositionTF!=tabPosition) {
 
 //                                new SendMessageTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"_rall");
-                                CmdSnd = true;
-                                tabPositionTF = tabPosition;
-                            }
-                        }
-
-                        if (tabPosition==2){
-
-                            Monitor=BufferInW;
-                            tabPositionTF = tabPosition;
-
-                        }
-
-
-
-
+                        CmdSnd = true;
+                        tabPositionTF = tabPosition;
                     }
+                }
 
-                    @Override
-                    public void onFinish() {
+                if (tabPosition==2){
 
-                        Timer.start();
+                    Monitor=BufferInW;
+                    tabPositionTF = tabPosition;
 
-                    }
-                }.start();
+                }
+            }
+
+            @Override
+            public void onFinish() {
+
+                Timer.start();
+
+            }
+        }.start();
+
 
     }
 
@@ -182,13 +173,7 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Dat
         Timer.cancel();
     }
 
-    @Override
-    public void sendData(String address) {
-        //conexionBT(address);
-
-    }
-
-    public static class SendMessageTask extends AsyncTask<String,Void,Void> {
+    public class SendMessageTask extends AsyncTask<String, Void, Void> {
 
         @Override
         protected Void doInBackground(String... params) {
@@ -243,20 +228,19 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Dat
                 public void messageReceived(String message) {
                     //this method calls the onProgressUpdate
                     publishProgress(message);
+                    if (message.toString().contains(";")) {
+                        BufferInFlag = true;
+                    }
                 }
             });
             mTcpClient.run();
-
             return null;
         }
 
         @Override
         protected void onProgressUpdate(String... values) {
             super.onProgressUpdate(values);
-            BufferInW=BufferInW+values[0];//+"\n";
-//            Datos.setText(Datos.getText()+String.valueOf(String.valueOf(values[0]))+"\n");
-            // notify the adapter that the data set has changed. This means that new message received
-            // from server was added to the list
+            BufferInW = BufferInW + values[0];
         }
     }
 }
