@@ -3,6 +3,7 @@ package com.toolbartabs.toolbartabs.Activities;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.renderscript.ScriptGroup;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
 import com.toolbartabs.toolbartabs.Adapters.PagerAdapter;
+import com.toolbartabs.toolbartabs.Fragments.FirstFragment;
 import com.toolbartabs.toolbartabs.Fragments.ThirdFragment;
 import com.toolbartabs.toolbartabs.R;
 
@@ -18,13 +20,13 @@ import java.util.ArrayList;
 import static com.toolbartabs.toolbartabs.Activities.TcpClient.mRun;
 import static com.toolbartabs.toolbartabs.Fragments.SecondFragment.Monitor;
 
-public class MainActivity extends AppCompatActivity implements ThirdFragment.Fragment3Listener{
+public class MainActivity extends AppCompatActivity implements ThirdFragment.Fragment3Listener,FirstFragment.Fragment1Listener {
     //implements FirstFragment.Datalistener{
 
     // Declaracion de campos
     public static boolean BufferInFlag, BT_Connected;
     public static StringBuilder DataStringIN = new StringBuilder();
-    public static String BufferInW;
+    public static String BufferInW, checkBeatW;
     public static boolean CmdSnd, altoTest = true;
     public static int Step = 0, Trans = 0, lastPos, indice = 0, intentosEstado = 0;
     public static ArrayList<String> devices = new ArrayList<>();
@@ -76,9 +78,9 @@ public class MainActivity extends AppCompatActivity implements ThirdFragment.Fra
                 //if(listaBT){position=2;}
 
                 tabPosition = tab.getPosition();
-                if (!mRun){
-                    position=0;
-                    tabPosition=0;
+                if (!mRun) {
+                    position = 0;
+                    tabPosition = 0;
                     sinRegreso = false;
                     Toast.makeText(getBaseContext(), "Conectar a controlador", Toast.LENGTH_SHORT).show();
                 }
@@ -113,7 +115,8 @@ public class MainActivity extends AppCompatActivity implements ThirdFragment.Fra
 
     @Override
     public void onInput3Sent(String input) {
-        new SendMessageTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,String.valueOf(input));
+        BufferInFlag = false;
+        new SendMessageTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, String.valueOf(input));
 
     }
 
@@ -121,24 +124,27 @@ public class MainActivity extends AppCompatActivity implements ThirdFragment.Fra
     public void onResume() {
         super.onResume();
 
+ //       new checkBeat().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+
         Timer = new CountDownTimer(30000, 150) {
             @Override
             public void onTick(long millisUntilFinished) {
 
-                if (tabPosition0!=tabPosition) {
+                if (tabPosition0 != tabPosition) {
 //                            Toast.makeText(getBaseContext(), "Pagina " + tabPosition, Toast.LENGTH_SHORT).show();
-                    tabPosition0=tabPosition;
+                    tabPosition0 = tabPosition;
                 }
 
-                if (tabPosition==0){
+                if (tabPosition == 0) {
 
                     tabPositionTF = tabPosition;
 
                 }
 
-                if (tabPosition==1){
+                if (tabPosition == 1) {
 
-                    if (tabPositionTF!=tabPosition) {
+                    if (tabPositionTF != tabPosition) {
 
 //                                new SendMessageTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"_rall");
                         CmdSnd = true;
@@ -146,12 +152,13 @@ public class MainActivity extends AppCompatActivity implements ThirdFragment.Fra
                     }
                 }
 
-                if (tabPosition==2){
+                if (tabPosition == 2) {
 
-                    Monitor=BufferInW;
+                    Monitor = BufferInW;
                     tabPositionTF = tabPosition;
 
                 }
+
             }
 
             @Override
@@ -171,6 +178,17 @@ public class MainActivity extends AppCompatActivity implements ThirdFragment.Fra
         super.onDestroy();
 
         Timer.cancel();
+    }
+
+    @Override
+    public void onInput1Conectar(String input) {
+        new ConnectTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+    }
+
+    @Override
+    public void onInput1Check(String input) {
+        new checkBeat().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public class SendMessageTask extends AsyncTask<String, Void, Void> {
@@ -241,6 +259,42 @@ public class MainActivity extends AppCompatActivity implements ThirdFragment.Fra
         protected void onProgressUpdate(String... values) {
             super.onProgressUpdate(values);
             BufferInW = BufferInW + values[0];
+        }
+    }
+
+    public class checkBeat extends AsyncTask<Void, String, String> {
+        String resp;
+        int intentos = 0;
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            onInput3Sent("_testw");
+
+            while (!BufferInFlag || intentos < 10000) {
+                ++intentos;
+            }
+
+            if (BufferInW.contains("Ok...")){
+                resp="Conectado";
+                //checkBeatW="Conectado";
+                publishProgress(resp);
+            }
+
+            else{
+                resp="No Conectado";
+                //checkBeatW ="No Conectado";
+
+                publishProgress(resp);
+            }
+
+            return resp;
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+            checkBeatW=values[0];
+
         }
     }
 }
